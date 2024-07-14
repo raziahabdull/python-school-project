@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class teacher(models.Model):
+class Teacher(models.Model):
     first_name = models.CharField(max_length=20)
     last_name= models.CharField(max_length=20)
     nationality = models.CharField(max_length=15)

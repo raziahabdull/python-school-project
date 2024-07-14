@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-class lovelace(models.Model):
+class Lovelace(models.Model):
     lovelace_name = models.CharField(max_length=10)
     lovelace_id = models.CharField(max_length=5)
     lovelace_descirption = models.TextField()
