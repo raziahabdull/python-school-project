@@ -1,10 +1,13 @@
-from django.urls import path
-from .views import StudentListView
+from django import urls
+from django.urls import path                        
+from .views import StudentListView, CourseListView, ClassDurationListView, LovelaceListView, StudentDetailView,TeacherListView
 
 urlpatterns =[
-    path("students/",StudentListView.as_view(),name="student_list_view"),
+    path("Students/",StudentListView.as_view(),name="student_list_view"),
     
-]
+    ]
+ 
+
 urlpatterns =[
     path("Teacher/",TeacherListView.as_view(),name="teacher_list_view"),
     
@@ -18,6 +21,9 @@ urlpatterns =[
     
 ]
 urlpatterns =[
-    path("Lovelace/",ClassDurationListView.as_view(),name="lovelace_list_view"),
+    path("Lovelace/",LovelaceListView.as_view(),name="lovelace_list_view"),
     
+]
+urlpatterns =[
+    path("Students/<int:id>/",StudentDetailView.as_view(),name ="student_detail_view"),
 ]
