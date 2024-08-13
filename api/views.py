@@ -20,8 +20,14 @@ from rest_framework import status
 class StudentListView(APIView):
     def get(self,request):
         students = Student.objects.all()
+        first_name = request.query_params.get("first_name")
+        if first_name:
+            students = students.filter(first_name = first_name)
+        if country:
+            students = students.filter(country=country)
         serializer = StudentSerializer(students,many=True)
         return Response(serializer.data)
+        
     def post(self,request):
         serializer = StudentSerializer( data=request.data)
         if serializer.is_valid():
@@ -51,6 +57,17 @@ class StudentDetailView(APIView):
             student.delete()
             return Response(status=status.HTTP_202_ACCEPTED)
 
+        def enroll_student(self,student,course_id):
+            course= Course.objects.get(id_course_id)
+            student.courses.add(course)
+
+        def post(self,request,id):
+            student = Student.objects.get(id=id)
+            action = request.data.get("action")
+            if action =="enroll":
+             course_id = request.data.get("course")
+            self.enroll_student(student,course_id)
+            return Response(status.HTTP_201_ACCEPTED)
 class ClassDurationListView(APIView):
     def get(self,request):
         classduration = ClassDuration                                                                                                                                                                               .objects.all()
@@ -119,6 +136,35 @@ class LovelaceDetailView(APIView):
             lovelace = Lovelace.objects.get(id=id)
             Lovelace.delete()
             return Response(status=status.HTTP_202_ACCEPTED)
+             def enroll_student(self,student,lovelace_id):
+            lovelace= Lovelace.objects.get(id_lovelace_id)
+            student.lovelace.add(lovelace)
+
+        def post(self,request,id):
+            student = Student.objects.get(id=id)
+            action = request.data.get("action")
+            if action =="enroll":
+             lovelace_id = request.data.get("lovelace")
+            self.enroll_student(student,lovelace_id)
+            return Response(status.HTTP_201_ACCEPTED)
+
+
+         def delete(self,request,id):
+            teacher = Teacher.objects.get(id=id)
+            teacher.delete()
+            return Response(status=status.HTTP_202_ACCEPTED)
+            def assign_class(self,student,lovelace_id):
+            lovelace= Lovelace.objects.get(id_course_id)
+            teacher.lovelace.add(lovelace)
+
+        def post(self,request,id):
+            student = Student.objects.get(id=id)
+            action = request.data.get("action")
+            if action =="assigned_class":
+             course_id = request.data.get("class")
+            self.assign_class(student,lovelace_id)
+            return Response(status.HTTP_201_ACCEPTED)
+    
 
 class CourseListView(APIView):
     def get(self,request):
@@ -126,7 +172,7 @@ class CourseListView(APIView):
         serializer = CourseSerializer(Course,many=True)
         return Response(serializer.data)
 
-     def post(self,request):
+    def post(self,request):
         serializer = CourseSerializer( data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -188,4 +234,15 @@ class TeacherDetailView(APIView):
             teacher = Teacher.objects.get(id=id)
             teacher.delete()
             return Response(status=status.HTTP_202_ACCEPTED)
+            def assign_course(self,student,course_id):
+            course= Course.objects.get(id_course_id)
+            teacher.courses.add(course)
+
+        def post(self,request,id):
+            student = Student.objects.get(id=id)
+            action = request.data.get("action")
+            if action =="assigned_course":
+             course_id = request.data.get("course")
+            self.assign_course(student,course_id)
+            return Response(status.HTTP_201_ACCEPTED)
     
