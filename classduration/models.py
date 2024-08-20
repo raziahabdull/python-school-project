@@ -1,5 +1,4 @@
 from django.db import models
-
 class ClassDuration(models.Model):
 
     class_name = models.CharField(max_length=40)
@@ -11,6 +10,7 @@ class ClassDuration(models.Model):
     end_time = models.TimeField()
     date = models.DateField()
     breaks= models.PositiveSmallIntegerField()
+
 
     def _str_(self):
         return f"{self.class_name}{self.class_id}"

@@ -1,7 +1,6 @@
 from django.db import models
-
+from teacher.models import Teacher
 class Course(models.Model):
-
     course_name = models.CharField(max_length=40)
     course_id = models.CharField(max_length=20)
     course_descirption = models.TextField()
@@ -11,6 +10,7 @@ class Course(models.Model):
     school_term = models.PositiveSmallIntegerField()
     course_capacity = models.PositiveSmallIntegerField()
     grade_level = models.PositiveSmallIntegerField()
+
 
     def _str_(self):
         return f"{self.course_id}{self.course_name}"

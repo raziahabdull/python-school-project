@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 from rest_framework.views import  APIView
 from student.models import Student
-from .serializers import StudentSerializer
+from .serializers import StudentSerializer,MinimalStudentSerializer
 from classduration.models import ClassDuration
 from .serializers import  ClassDurationSerializer
 from lovelace.models import Lovelace
@@ -18,14 +18,15 @@ from rest_framework import status
 
 
 class StudentListView(APIView):
-    def get(self,request):
+    def get(self,request,):
         students = Student.objects.all()
         first_name = request.query_params.get("first_name")
+        country = request.query_params.get("country")
         if first_name:
             students = students.filter(first_name = first_name)
         if country:
             students = students.filter(country=country)
-        serializer = StudentSerializer(students,many=True)
+        serializer = MinimalStudentSerializer(students,many=True)
         return Response(serializer.data)
         
     def post(self,request):
@@ -35,12 +36,13 @@ class StudentListView(APIView):
             return Response(serializer.data,status= status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors,status = status.HTTP_400_BAD_REQUEST)
+   
 
 
 class StudentDetailView(APIView):
     def get(self,request,id):
         student = Student.objects.get(id=id)
-        serializer = StudentSerializer(Student)
+        serializer = StudentSerializer(student)
         return Response(serializer.data)
 
     def put(self,request,id):
@@ -70,12 +72,21 @@ class StudentDetailView(APIView):
             return Response(status.HTTP_201_ACCEPTED)
 class ClassDurationListView(APIView):
     def get(self,request):
-        classduration = ClassDuration                                                                                                                                                                               .objects.all()
-        serializer = ClassDurationSerializer(classduration,many=True)
+        class_duration = ClassDuration.objects.get(id=id)                                                                                                                                                                               .objects.all()
+        trainner= request.query_params.get("trainner")
+        date = request.query_params.get("date")
+        if trainner:
+            class_duration = ClassDuration.filter(trainner=trainner)
+
+        if date:
+         class_duration = class_duration.filter(date=date)
+        serializer = MinimalStudentSerializer(students,many=True)
+        return Response(serializer.data)
+
         return Response(serializer.data)
    
     def post(self,request):
-        serializer = ClassDurationSerializer(classduration,data=request.data)
+        serializer = ClassDurationSerializer(class_duration,data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status= status.HTTP_201_CREATED)
@@ -84,12 +95,12 @@ class ClassDurationListView(APIView):
 
 class ClassDurationDetailView(APIView):
     def get(self,request,id):
-        classduration = ClassDuration.objects.get(id=id)
-        serializer = ClassDurationSerializer(ClassDuration)
+        class_duration = ClassDuration.objects.get(id=1)
+        serializer = ClassDurationSerializer(classduration)
         return Response(serializer.data)
 
     def put(self,request,id):
-        classduration = ClassDuration.objects.get(id=id)
+        class_duration = ClassDuration.objects.get(id=1)
         serializer = ClassDurationSerializer(classduration,data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -98,15 +109,26 @@ class ClassDurationDetailView(APIView):
             return Response(serializers.errors,status.HTTP_400_BAD_REQUEST)
 
         def delete(self,request,id):
-            classduration = ClassDuration.objects.get(id=id)
-            classduration.delete()
+            class_duration = ClassDuration.objects.get(id=id)
+            class_duration.delete()
             return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class LovelaceListView(APIView):
     def get(self,request):
         lovelace = Lovelace.objects.all()
-        serializer = LovelaceSerializer(lovelace,many=True)
+        capacity= request.query_params.get("capacity")
+        hours = request.query_params.get("hours")
+        if capacity:
+            lovelace = Lovelace.filter(capacity=capacity)
+
+        if hours:
+         class_duration = class_duration.filter(hours=hours)
+        serializer = MinimalLovelacetSerializer(lovelace,many=True)
+        return Response(serializer.data)
+
+        return Response(serializer.data)
+   
         return Response(serializer.data)
 
     def post(self,request):
@@ -136,7 +158,7 @@ class LovelaceDetailView(APIView):
             lovelace = Lovelace.objects.get(id=id)
             Lovelace.delete()
             return Response(status=status.HTTP_202_ACCEPTED)
-             def enroll_student(self,student,lovelace_id):
+        def enroll_student(self,student,lovelace_id):
             lovelace= Lovelace.objects.get(id_lovelace_id)
             student.lovelace.add(lovelace)
 
@@ -149,13 +171,13 @@ class LovelaceDetailView(APIView):
             return Response(status.HTTP_201_ACCEPTED)
 
 
-         def delete(self,request,id):
+        def delete(self,request,id):
             teacher = Teacher.objects.get(id=id)
             teacher.delete()
             return Response(status=status.HTTP_202_ACCEPTED)
             def assign_class(self,student,lovelace_id):
-            lovelace= Lovelace.objects.get(id_course_id)
-            teacher.lovelace.add(lovelace)
+             lovelace= Lovelace.objects.get(id_course_id)
+             teacher.lovelace.add(lovelace)
 
         def post(self,request,id):
             student = Student.objects.get(id=id)
@@ -169,7 +191,15 @@ class LovelaceDetailView(APIView):
 class CourseListView(APIView):
     def get(self,request):
         course = Course.objects.all()
-        serializer = CourseSerializer(Course,many=True)
+        id = request.query_params.get("id")
+        name = request.query_params.get("name")
+        if id:
+            course = Course.filter(id=id)
+        if name:
+            course = Teacher.filter(name=name)
+        serializer = MinimalCourseSerializer(course,many=True)
+        return Response(serializer.data)
+        return Response(serializer.data)
         return Response(serializer.data)
 
     def post(self,request):
@@ -182,7 +212,7 @@ class CourseListView(APIView):
 class CourseDetailView(APIView):
     def get(self,request,id):
         course= Course.objects.get(id=id)
-        serializer = CourseSerializer(Course)
+        serializer = CourseSerializer(course)
         return Response(serializer.data)
 
     def put(self,request,id):
@@ -203,17 +233,17 @@ class CourseDetailView(APIView):
 
 class TeacherListView(APIView):
     def get(self,request):
-        Teacher = Teacher.objects.all()
-        serializer = TeacherSerializer(Teacher,many=True)
+        teacher = Teacher.objects.all()
+        first_name = request.query_params.get("first_name")
+        course = request.query_params.get("course")
+        if first_name:
+            teacher = Teacher.filter(first_name = first_name)
+        if course:
+            teacher = Teacher.filter(course=course)
+        serializer = MinimalTeacherSerializer(teacher,many=True)
+        return Response(serializer.data)
         return Response(serializer.data)
 
-    def post(self,request):
-        serializer = TeacherSerializer( data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status= status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors,status = status.HTTP_400_BAD_REQUEST)
 
 class TeacherDetailView(APIView):
     def get(self,request,id):
@@ -235,8 +265,8 @@ class TeacherDetailView(APIView):
             teacher.delete()
             return Response(status=status.HTTP_202_ACCEPTED)
             def assign_course(self,student,course_id):
-            course= Course.objects.get(id_course_id)
-            teacher.courses.add(course)
+             course= Course.objects.get(id_course_id)
+             teacher.courses.add(course)
 
         def post(self,request,id):
             student = Student.objects.get(id=id)
@@ -245,4 +275,5 @@ class TeacherDetailView(APIView):
              course_id = request.data.get("course")
             self.assign_course(student,course_id)
             return Response(status.HTTP_201_ACCEPTED)
-    
+
+
